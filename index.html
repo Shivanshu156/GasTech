@@ -1,42 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Navigation Bar with SVG Boxes</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-<link rel="stylesheet" href="main.css">
-  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://d3js.org/topojson.v3.min.js"></script>
+  <script src="js/4th_Viz_ytelkhad.js"></script>
+  <script src="js/5th_Viz_ytelkhad.js"></script>
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="style/4th_ytelkhadstyle.css">
+
+
 </head>
+
 <body>
 
-<nav>
-  <label for="dateInput">Select Date: </label>
-  <input type="date" id="dateInput" onchange="updateOrder()">
-</nav>
+  <nav>
+    <!-- <label for="dateInput">Select Date: </label>
+    <input type="date" id="dateInput" onchange="updateOrder()"> -->
+    <label for="datePicker">Select Date:</label>
+    <input type="date" id="datePicker" value="2014-01-06" onchange="updateOrder()">
+  </nav>
 
-<div class="container" id="boxContainer">
-  <div class="row">
-    <div class="box_1"><svg id="svg_1"></svg></div>
-    <div class="box_2"><svg id="svg_2"></svg></div>
-  </div>
-  <div class="row">
-    <div class="box_5"><svg id="svg_5"></svg></div>
+  <div class="container" id="boxContainer">
+    <div class="row">
+      <div class="box_1"><svg id="svg_1"></svg></div>
+      <div class="box_2"><svg id="svg_2"></svg></div>
+    </div>
+    <div class="row">
+      <div class="box_5">
+        <div id="beeswarmViz">
+        </div>
+        <div id="tooltip"
+          style="position: absolute; opacity: 0; pointer-events: none; background-color: white; border: solid 1px black; padding: 10px;">
+        </div>
 
-  </div>
-  <div class="row">
-    <div class="box_3"><svg id="svg_3"></svg></div>
-    <div class="box_4"><svg id="svg_4"></svg></div>
-  </div>
-</div>
+      </div>
 
-<script src="main.js">
-  // Function to update the date in the navigation bar
+    </div>
+    <div class="row">
+      <div class="box_3"><svg id="svg_3"></svg></div>
+      <div class="box_4">
+
+        <div id="controls" class="control-panel">
+          <!-- Date Picker -->
+          <!-- <label for="datePicker">Select Date:</label>
+          <input type="date" id="datePicker" value="2014-01-06"> -->
+          <!-- Time Slider -->
+          <label for="timeSlider">Time:</label>
+          <div class="time-control">
+            <input type="range" id="timeSlider" min="0" max="24" step="0.01" value="12.21">
+            <button id="playButton">Play</button>
+            <span id="currentTimeDisplay">12:21</span>
+          </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="map-and-legend-container">
+          <div id="map-container">
+            <img src="data/MC2-tourist.jpg" style="opacity: 0.65;" alt="Map of Abila">
+            <!-- SVG for TopoJSON will be appended here by D3.js -->
+          </div>
+          <!-- <div class="legend" id="legend"> -->
+            <!-- Legend items will be dynamically added here -->
+          <!-- </div> -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js">
+    // Function to update the date in the navigation bar
   </script>
 
 </body>
+
 </html>
