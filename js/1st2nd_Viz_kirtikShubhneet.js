@@ -1,12 +1,15 @@
 // Load data from the CSV file
-function createGanttChart() {
+function createGanttChart(date) {
     d3.csv('data/cc_data.csv').then(function (data) {
         data.forEach(function (d) {
             d.timestamp = new Date(d.timestamp);
         });
 
-        const chosenDate = new Date('2014-01-7');
-        console.log(chosenDate.toDateString());
+        let chosenDate = date ? date : '2014-01-06';
+        chosenDate = new Date(chosenDate);
+        chosenDate = new Date(chosenDate.getTime() + chosenDate.getTimezoneOffset() * 60000);
+
+        // console.log(chosenDate.toDateString());
         const selectedData = data.filter(function (d) {
             console.log(d.timestamp.toDateString());
 
@@ -212,7 +215,10 @@ function createGanttChart() {
 }
 
 function createLineChart(date) {
-    d3.select('.box_2').select('svg').remove();
+
+
+
+    
     const desiredDate = date ? date : '2014-01-06';
     // Load cc_data and loyalty_data CSV files
     Promise.all([
@@ -247,9 +253,6 @@ function createLineChart(date) {
             return { hour, sum };
         });
         sumData.sort((a, b) => a.hour - b.hour);
-
-
-        
 
         // Parse timestamps and extract hours for vehicle loyaltyCCData
         vehicleData.forEach((d) => (d.Timestamp = parseDate(d.Timestamp)));
@@ -443,6 +446,8 @@ function createLineChart(date) {
             .attr('x', 20)
             .attr('y', 48)
             .text('Total Vehicles');
+
+        
     });
 }
 
@@ -450,7 +455,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const datePicker_fourth_viz = document.getElementById('datePicker');
 
     datePicker_fourth_viz.addEventListener('change', () => {
-        let newDate = datePicker_fourth_viz.value
+        d3.select('.box_1').selectAll('svg').remove();
+        d3.select('.box_2').select('svg').remove();
+
+        let newDate = datePicker_fourth_viz.value;
         createGanttChart(newDate);
         createLineChart(newDate);
     });
