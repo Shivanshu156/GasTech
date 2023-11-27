@@ -221,8 +221,8 @@ function createLineChart() {
 
         // Set up the SVG dimensions
         const margin = { top: 20, right: 80, bottom: 30, left: 50 };
-        const width = 600 - margin.left - margin.right;
-        const height = 400 - margin.top - margin.bottom;
+        const width = 900 - margin.left - margin.right;
+        const height = 650 - margin.top - margin.bottom;
 
         // Create SVG container
         const svg = d3.select('.box_2')
@@ -346,7 +346,7 @@ function createLineChart() {
 
         // Legend
         const legend = svg.append('g')
-            .attr('transform', `translate(${width - 460},${margin.top - 10})`)
+            .attr('transform', `translate(${width - 720},${margin.top - 0})`)
             .attr('class', 'legend');
 
         legend.append('rect')
