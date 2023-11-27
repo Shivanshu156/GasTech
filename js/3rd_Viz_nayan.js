@@ -70,10 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // console.log(linksWithCount);
     // Initialize force simulation
     const simulation = d3.forceSimulation(nodes)
-    .force("link", d3.forceLink(linksWithCount).id(d => d.name).distance(30)) // Reduced distance
-    .force("charge", d3.forceManyBody().strength(-5)) // Further reduced strength
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("collide", d3.forceCollide().radius(30)); // Reduced radius
+      .force("link", d3.forceLink(linksWithCount).id(d => d.name).distance(30)) // Reduced distance
+      .force("charge", d3.forceManyBody().strength(-5)) // Further reduced strength
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force("collide", d3.forceCollide().radius(30)); // Reduced radius
 
     // Set initial positions based on whether the node is a source or target
     simulation.force("x", d3.forceX().strength(0.1).x(d => d.side === "source" ? 400 : 400)); // Lowered strength
@@ -114,16 +114,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Draw links
     const link = svg.selectAll("line")
-    .data(linksWithCount)
-    .enter().append("line")
-    .attr("stroke", "#aaa") // More subtle default color
-    .attr("stroke-width", d => Math.max(1, d.count / 2)) // Ensure a minimum stroke width
-    .style("visibility", "hidden")
+      .data(linksWithCount)
+      .enter().append("line")
+      .attr("stroke", "#aaa") // More subtle default color
+      .attr("stroke-width", d => Math.max(1, d.count / 2)) // Ensure a minimum stroke width
+      .style("visibility", "hidden")
 
-  
-  link.append("title")
-    .text(d => `Connection between ${d.source.name} and ${d.target.name}, Count: ${d.count}`);
-  
+
+    link.append("title")
+      .text(d => `Connection between ${d.source.name} and ${d.target.name}, Count: ${d.count}`);
+
 
     // Draw nodes with circles for "source" and rectangles for "target"
     const node = svg.selectAll("g")
@@ -137,10 +137,10 @@ document.addEventListener("DOMContentLoaded", function () {
       .filter(d => d.side === "source")
       .attr("r", 10)
       .attr("fill", d => colorScale(d.name))
-      .style("stroke", "#fff") 
+      .style("stroke", "#fff")
       .style("stroke-width", "1px")
-      .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)") 
-      .on("mouseover", function () { d3.select(this).transition().attr("r", 15); }) 
+      .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)")
+      .on("mouseover", function () { d3.select(this).transition().attr("r", 15); })
       .on("mouseout", function () { d3.select(this).transition().attr("r", 10); });
 
     node.append("rect")
@@ -148,15 +148,53 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("width", 20)
       .attr("height", 10)
       .attr("fill", "url(#halfBrownHalfYellowGradient)")
-      .attr("rx", 3) 
+      .attr("rx", 3)
       .attr("ry", 3)
       .style("stroke", "#fff") // White border
       .style("stroke-width", "1px")
       .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)") // Shadow effect
-      .on("mouseover", function () { d3.select(this).transition().attr("width", 45).attr("height", 25); }) 
+      .on("mouseover", function () { d3.select(this).transition().attr("width", 45).attr("height", 25); })
       .on("mouseout", function () { d3.select(this).transition().attr("width", 20).attr("height", 10); });
 
+    const labelArea = svg.append("g") // Create a group for labels
+      .attr("transform", "translate(20, 30)"); // Position this group
+
+    labelArea.append("circle")
+      .attr("cx", 10)
+      .attr("cy", 0)
+      .attr("r", 10)
+      .style("fill", "#808080");
+
+    labelArea.append("text")
+      .attr("x", 25)
+      .attr("y", 5)
+      .text("Owner Name")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "12px")
+      .attr("fill", "black");
+
+    // Draw label for Credit and Loyalty Card (Rectangle)
+    labelArea.append("rect")
+      .attr("x", 0)
+      .attr("y", 20)
+      .attr("width", 20)
+      .attr("height", 15)
+      .attr("fill", "url(#halfBrownHalfYellowGradient)")
+      .attr("rx", 3)
+      .attr("ry", 3)
+      .style("stroke", "#fff") // White border
+      .style("stroke-width", "1px")
+      .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)") // Shadow effect
+      
+    labelArea.append("text")
+      .attr("x", 25)
+      .attr("y", 30)
+      .text("Credit and Loyalty Card Information")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "12px")
+      .attr("fill", "black");
     // Define a linear gradient
+
     const gradient = svg.append("defs")
       .append("linearGradient")
       .attr("id", "halfBrownHalfYellowGradient")
