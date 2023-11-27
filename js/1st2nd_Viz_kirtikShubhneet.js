@@ -180,6 +180,7 @@ function createGanttChart(date) {
             .on('click', function (event, d) {
                 // Log the corresponding location value to the console
                 console.log('Clicked on location:', d.location);
+                highlightLocation(d.location)
                 d3.select('.box_2').select('svg').remove();
                 createLineChart(date, d.location);
             });

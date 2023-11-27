@@ -136,6 +136,7 @@ function drawBeeswarmChart_fifth_viz() {
         .data(combined_data_fifth_viz)
         .enter().append("circle")
         .attr("class", "dot")
+        .attr("id", d => `location-${normalizeString(d.location)}`)
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .attr("r", 3)
@@ -255,4 +256,20 @@ function forceYCustom_fifth_viz(yValue_fifth_viz) {
     };
 
     return force_fifth_viz;
+}
+
+function highlightLocation(locationName) {
+    const normalizedLocation = normalizeString(locationName);
+
+    // Reduce the opacity of all circles
+    g_beeswarm_fifth_viz.selectAll(".dot")
+        .style("opacity", 0.2);
+
+    // Increase the opacity of circles that match the specified location
+    g_beeswarm_fifth_viz.selectAll(`#location-${normalizedLocation}`)
+        .style("opacity", 1);
+}
+
+function normalizeString(str) {
+    return str.replace(/[^a-zA-Z0-9]/g, '-'); // Replace non-alphanumeric characters with hyphens
 }
