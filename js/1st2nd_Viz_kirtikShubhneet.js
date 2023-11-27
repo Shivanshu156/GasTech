@@ -110,7 +110,7 @@ function createGanttChart(date) {
             .attr('y', -5)
             .text('15');
 
-        const margin = { top: 100, right: 30, bottom: 30, left: 200 };
+        const margin = { top: 100, right: 30, bottom: 40, left: 200 };
         const width = 800 - margin.left - margin.right;
         const height = 600 - margin.top - margin.bottom;
 
@@ -209,6 +209,15 @@ function createGanttChart(date) {
             .attr('dy', '1em')
             .style('text-anchor', 'middle')
             .text('Location');
+
+        // Add x-axis label
+        svg.append('text')
+            .attr(
+                'transform',
+                `translate(${width / 2},${height + margin.bottom - 5 })`
+            )
+            .style('text-anchor', 'middle')
+            .text('Time of the day');
 
         svg.append('text')
             .attr('x', width / 2)
@@ -463,6 +472,7 @@ function createLineChart(date, location) {
             .attr('x', 0 - height / 2)
             .attr('dy', '1em')
             .style('text-anchor', 'middle')
+            .style('fill', 'red')  // Set text color to red
             .text('Total Amount Spent');
 
         // Draw Y-axis for vehicle count
@@ -525,13 +535,13 @@ function createLineChart(date, location) {
             .attr('y', 0)
             .attr('width', 10)
             .attr('height', 10)
-            .style('fill', 'blue');
+            .style('fill', 'red');
 
         legend
             .append('text')
             .attr('x', 20)
             .attr('y', 8)
-            .text('Total Transactions');
+            .text('Amount Spent');
 
         legend
             .append('rect')
@@ -539,9 +549,9 @@ function createLineChart(date, location) {
             .attr('y', 20)
             .attr('width', 10)
             .attr('height', 10)
-            .style('fill', 'red');
+            .style('fill', 'blue');
 
-        legend.append('text').attr('x', 20).attr('y', 28).text('Amount Spent');
+        legend.append('text').attr('x', 20).attr('y', 28).text('Total Transactions');
 
         legend
             .append('rect')
