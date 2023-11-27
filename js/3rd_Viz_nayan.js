@@ -238,12 +238,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to handle mouseover event
     function handleMouseOver(event, d) {
       link.transition().duration(300) // Smoother transition for showing links
-        .style("visibility", l => l.source === d || l.target === d ? "visible" : "hidden");
+      //   .style("visibility", l => l.source === d || l.target === d ? "visible" : "hidden");
     }
 
     function handleMouseOut() {
       link.transition().duration(300) // Smoother transition for hiding links
-        .style("visibility", "hidden");
+      //   .style("visibility", "hidden");
     }
 
     // Apply mouseout event to nodes
