@@ -50,6 +50,8 @@ document.addEventListener('DOMContentLoaded', function () {
 function drawBeeswarmChart_fifth_viz() {
     const locations_fifth_viz = [...new Set(combined_data_fifth_viz.map(d => d.location))]
 
+    
+
     // Create Scales
     const xScale_fifth_viz = d3.scaleBand()
         .domain(locations_fifth_viz) // Use the sorted locations here
@@ -115,7 +117,10 @@ function drawBeeswarmChart_fifth_viz() {
         tooltip_fifth_viz.html("Price: $" + d.price +
             "<br/>Card Used: " + (d.type === 'cc' ? d.last4ccnum : d.loyaltynum) +
             "<br/>Owner: " + d.owner +
-            "<br/>Timestamp: " + d.timestamp)
+            "<br/>Timestamp: " + d.timestamp +
+            "<br/>Location: " + d.location
+            
+            )
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 28) + "px");
     }
@@ -272,4 +277,4 @@ function highlightLocation(locationName) {
 
 function normalizeString(str) {
     return str.replace(/[^a-zA-Z0-9]/g, '-'); // Replace non-alphanumeric characters with hyphens
-}
+    }
