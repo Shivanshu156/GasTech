@@ -181,7 +181,7 @@ function createGanttChart(date) {
                 // Log the corresponding location value to the console
                 console.log('Clicked on location:', d.location);
                 d3.select('.box_2').select('svg').remove();
-                createLineChart(date, d.location)
+                createLineChart(date, d.location);
             });
 
         svg.append('g')
@@ -224,7 +224,10 @@ function createGanttChart(date) {
 
 function createLineChart(date, location) {
     const desiredDate = date ? date : '2014-01-06';
-    const desiredLocation = location ? location : `Brew've Been Served`;
+    let desiredLocation = location ? location : `Brew've Been Served`;
+
+    if (desiredLocation === 'Katerina�s Caf�')
+        desiredLocation = 'Katerinas Café';
 
     // Load cc_data and loyalty_data CSV files
     Promise.all([
@@ -237,62 +240,61 @@ function createLineChart(date, location) {
             .attr('class', 'tooltip')
             .style('opacity', 0);
 
-        // const desiredDate = '2014-01-06';
-
-        // Parse timestamps and extract hours for main loyaltyCCData
+        // Parse timestamps and extract dates for main loyaltyCCData
         const parseDate = d3.timeParse('%Y-%m-%d %H:%M:%S');
         loyaltyCCData.forEach(
             (d) => (d.timestamp_x = parseDate(d.timestamp_x))
         );
-        loyaltyCCData.forEach((d) => (d.hour = d.timestamp_x.getHours()));
+        loyaltyCCData.forEach((d) => (d.date = d3.timeDay(d.timestamp_x))); // Extract date
 
         let loyaltyCCFilteredData = loyaltyCCData.filter(
-            (d) => d.timestamp_x.toISOString().split('T')[0] === desiredDate
-        );
-
-        loyaltyCCFilteredData = loyaltyCCFilteredData.filter(
+            // (d) => d.date.toISOString().split('T')[0] === desiredDate
             (d) => d.location === desiredLocation
         );
 
+        // let loyaltyCCFilteredData = loyaltyCCFilteredData.filter(
+        //     (d) => d.location === desiredLocation
+        // );
+
         console.log('Kirtik', loyaltyCCFilteredData);
 
-        const hourGroupedData = d3.group(loyaltyCCFilteredData, (d) => d.hour);
+        const dateGroupedData = d3.group(loyaltyCCFilteredData, (d) => d.date); // Group by date
 
-        // Aggregate counts for the same hour
-        const lineChartData = Array.from(hourGroupedData, ([hour, entries]) => {
+        // Aggregate counts for the same date
+        const lineChartData = Array.from(dateGroupedData, ([date, entries]) => {
             const count = entries.length;
-            return { hour, count };
+            return { date, count };
         });
-        lineChartData.sort((a, b) => a.hour - b.hour);
+        lineChartData.sort((a, b) => a.date - b.date);
 
-        // Aggregate sums of transaction amounts for the same hour
-        const sumData = Array.from(hourGroupedData, ([hour, entries]) => {
+        // Aggregate sums of transaction amounts for the same date
+        const sumData = Array.from(dateGroupedData, ([date, entries]) => {
             const sum = d3.sum(entries, (d) => d.price);
-            return { hour, sum };
+            return { date, sum };
         });
-        sumData.sort((a, b) => a.hour - b.hour);
+        sumData.sort((a, b) => a.date - b.date);
 
-        // Parse timestamps and extract hours for vehicle loyaltyCCData
+        // Parse timestamps and extract dates for vehicle loyaltyCCData
         vehicleData.forEach((d) => (d.Timestamp = parseDate(d.Timestamp)));
-        vehicleData.forEach((d) => (d.hour = d.Timestamp.getHours()));
+        vehicleData.forEach((d) => (d.date = d3.timeDay(d.Timestamp))); // Extract date
 
-        vehicleData = vehicleData.filter(
-            (d) => d.Timestamp.toISOString().split('T')[0] === desiredDate
-        );
+        // vehicleData = vehicleData.filter(
+        //     (d) => d.Timestamp.toISOString().split('T')[0] === desiredDate
+        // );
 
         vehicleData = vehicleData.filter((d) => d.location === desiredLocation);
 
-        const hourGroupedVehicle = d3.group(vehicleData, (d) => d.hour);
+        const dateGroupedVehicle = d3.group(vehicleData, (d) => d.date); // Group by date
 
-        // Aggregate counts for the number of vehicles passing each hour
+        // Aggregate counts for the number of vehicles passing each date
         const vehicleCountData = Array.from(
-            hourGroupedVehicle,
-            ([hour, entries]) => {
+            dateGroupedVehicle,
+            ([date, entries]) => {
                 const vehicleCount = entries.length;
-                return { hour, vehicleCount };
+                return { date, vehicleCount };
             }
         );
-        vehicleCountData.sort((a, b) => a.hour - b.hour);
+        vehicleCountData.sort((a, b) => a.date - b.date);
 
         // Set up the SVG dimensions
         const margin = { top: 20, right: 80, bottom: 40, left: 50 };
@@ -309,7 +311,10 @@ function createLineChart(date, location) {
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
         // Set up scales
-        const xScale = d3.scaleLinear().domain([0, 23]).range([0, width]);
+        const xScale = d3
+            .scaleTime()
+            .domain(d3.extent(lineChartData, (d) => d.date))
+            .range([0, width]);
 
         // Calculate the maximum value among transaction count and vehicle count
         const maxYValue = Math.max(
@@ -337,17 +342,17 @@ function createLineChart(date, location) {
         // Create line functions
         const lineCount = d3
             .line()
-            .x((d) => xScale(d.hour))
+            .x((d) => xScale(d.date))
             .y((d) => yScaleCount(d.count));
 
         const lineSum = d3
             .line()
-            .x((d) => xScale(d.hour))
+            .x((d) => xScale(d.date))
             .y((d) => yScaleSum(d.sum));
 
         const lineVehicleCount = d3
             .line()
-            .x((d) => xScale(d.hour))
+            .x((d) => xScale(d.date))
             .y((d) => yScaleVehicle(d.vehicleCount));
 
         // Draw X-axis
@@ -359,10 +364,10 @@ function createLineChart(date, location) {
         svg.append('text')
             .attr(
                 'transform',
-                `translate(${width / 2},${height -7 +  margin.bottom})`
+                `translate(${width / 2},${height + margin.bottom})`
             )
             .style('text-anchor', 'middle')
-            .text('Hour of the Day');
+            .text('Date');
 
         // Draw Y-axis for count
         svg.append('g').call(d3.axisLeft(yScaleCount));
@@ -382,7 +387,7 @@ function createLineChart(date, location) {
             .enter()
             .append('circle')
             .attr('class', 'circle-count')
-            .attr('cx', (d) => xScale(d.hour))
+            .attr('cx', (d) => xScale(d.date))
             .attr('cy', (d) => yScaleCount(d.count))
             .attr('r', 4) // Adjust the radius as needed
             .attr('fill', 'blue')
@@ -390,7 +395,11 @@ function createLineChart(date, location) {
                 // Show tooltip on mouseover
                 tooltip.transition().duration(200).style('opacity', 0.9);
                 tooltip
-                    .html(`Hour: ${d.hour}<br>Count: ${d.count}`)
+                    .html(
+                        `Date: ${
+                            d.date.toISOString().split('T')[0]
+                        }<br>Count: ${d.count}`
+                    )
                     .style('left', event.pageX + 5 + 'px')
                     .style('top', event.pageY - 28 + 'px');
             })
@@ -428,14 +437,18 @@ function createLineChart(date, location) {
             .enter()
             .append('circle')
             .attr('class', 'circle-sum')
-            .attr('cx', (d) => xScale(d.hour))
+            .attr('cx', (d) => xScale(d.date))
             .attr('cy', (d) => yScaleSum(d.sum))
             .attr('r', 4) // Adjust the radius as needed
             .attr('fill', 'red')
             .on('mouseover', function (event, d) {
                 tooltip.transition().duration(200).style('opacity', 0.9);
                 tooltip
-                    .html(`Hour: ${d.hour}<br>Sum: ${d.sum}`)
+                    .html(
+                        `Date: ${d.date.toISOString().split('T')[0]}<br>Sum: ${
+                            d.sum
+                        }`
+                    )
                     .style('left', event.pageX + 5 + 'px')
                     .style('top', event.pageY - 28 + 'px');
             })
@@ -471,14 +484,18 @@ function createLineChart(date, location) {
             .enter()
             .append('circle')
             .attr('class', 'circle-vehicle')
-            .attr('cx', (d) => xScale(d.hour))
+            .attr('cx', (d) => xScale(d.date))
             .attr('cy', (d) => yScaleVehicle(d.vehicleCount))
             .attr('r', 4) // Adjust the radius as needed
             .attr('fill', 'black')
             .on('mouseover', function (event, d) {
                 tooltip.transition().duration(200).style('opacity', 0.9);
                 tooltip
-                    .html(`Hour: ${d.hour}<br>Vehicle Count: ${d.vehicleCount}`)
+                    .html(
+                        `Date: ${
+                            d.date.toISOString().split('T')[0]
+                        }<br>Vehicle Count: ${d.vehicleCount}`
+                    )
                     .style('left', event.pageX + 5 + 'px')
                     .style('top', event.pageY - 28 + 'px');
             })
@@ -539,6 +556,19 @@ function createLineChart(date, location) {
             .attr('x', 20)
             .attr('y', 48)
             .text('Total Vehicles');
+
+        const title = svg
+            .append('g')
+            .attr('transform', `translate(${width - 450},${margin.top - 10})`)
+            .attr('class', 'legend');
+
+        title
+            .append('text')
+            .attr('x', 20)
+            .attr('y', 8)
+            .style('font-weight', 'bold') // Make the text bold
+            .style('font-size', '20px') // Set the font size
+            .text(desiredLocation);
     });
 }
 
