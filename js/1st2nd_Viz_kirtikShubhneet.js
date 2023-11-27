@@ -1,6 +1,6 @@
 // Load data from the CSV file
 function createGanttChart(){
-    d3.csv('../data/cc_data.csv').then(function(data) {
+    d3.csv('data/cc_data.csv').then(function(data) {
         data.forEach(function(d) {
             d.timestamp = new Date(d.timestamp);
         });
@@ -176,8 +176,8 @@ function createLineChart() {
 
     // Load cc_data and loyalty_data CSV files
     Promise.all([
-        d3.csv('../data/cc_loyalty_combined.csv'),
-        d3.csv('../data/merged_data.csv'), // Load merged_data.csv
+        d3.csv('data/cc_loyalty_combined.csv'),
+        d3.csv('data/merged_data.csv'), // Load merged_data.csv
     ]).then(([loyaltyCCData, vehicleData]) => {
 
         // Specify the desired date
