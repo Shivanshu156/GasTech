@@ -98,7 +98,9 @@ function drawBeeswarmChart_fifth_viz() {
 
     // Draw circles
     // Create the tooltip
-    const tooltip_fifth_viz = d3.select("#tooltip");
+    const tooltip_fifth_viz = d3.select("#beeswarmViz")
+    .append("div")
+    .attr("class", "tooltip_fifth");
 
     // Create mouseover and mouseout functions for the tooltip
     function mouseover_fifth_viz(event, d) {

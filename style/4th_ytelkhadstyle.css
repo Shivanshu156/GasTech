@@ -19,7 +19,7 @@
     z-index: 10;
 }
 
-.tooltip {   
+.tooltip_fourth {   
     position: absolute;           
     text-align: center;           
     width: 110px;                  
@@ -28,7 +28,8 @@
     font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;       
     background: rgba(0, 0, 0, 0.85);
     color: white;
-    border: 0px;      
+    border: 0px;    
+    z-index: 100;  
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     pointer-events: none;
@@ -37,8 +38,26 @@
     transition: opacity 0.3s;
 }
 
+.tooltip_fifth {   
+    position: absolute;           
+    text-align: center;           
+    width: 150px;                  
+    height: 70px;                 
+    padding: 5px;         
+    font: 12px "Helvetica Neue", Helvetica, Arial, sans-serif;       
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    border: 0px;    
+    z-index: 100;  
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    word-wrap: break-word;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
 
-.tooltip.show {
+.tooltip_fourth.show {
     opacity: 1; 
 }
 
@@ -136,30 +155,3 @@ img {
     margin-right: 10px; 
 }
 
-#tooltip_third_viz {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-    background-color: #ffffff;
-    border: 1px solid #dcdcdc;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    transition: opacity 0.3s;
-    font-family: 'Arial', sans-serif;
-    font-size: 14px;
-    color: #333333;
-    text-align: center;
-    max-width: 200px;
-}
-
-.tooltip-header {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #0056b3;
-}
-
-.tooltip-content {
-    font-size: 12px;
-    color: #666666;
-}

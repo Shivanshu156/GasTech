@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("stroke", "#FF0000");
 
         var tooltip_fourth_viz = d3.select("body").append("div")
-            .attr("class", "tooltip")
+            .attr("class", "tooltip_fourth")
             .style("opacity", 0);
 
         // Add event listeners to the SVG or paths
@@ -171,7 +171,7 @@ function updateCarPositions_fourth_viz(selectedTime_fourth_viz) {
         .attr("stroke-width", 1.5);  // Set the width of the boundary
 
     // Add tooltip functionality
-    const tooltip_fourth_viz = d3.select('.tooltip');
+    const tooltip_fourth_viz = d3.select('.tooltip_fourth');
 
     carPoints_fourth_viz.on('mouseover', function (event, d) {
         tooltip_fourth_viz.style('opacity', 0.9)
