@@ -54,7 +54,7 @@ body {
 }
 
 .box_1:hover {
-    transform: translateY(-5px); /* Slight lift effect on hover */
+    /* transform: translateY(-5px); Slight lift effect on hover */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), /* Enhanced shadow on hover for a "raised" effect */
                 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -73,7 +73,7 @@ body {
 }
 
 .box_2:hover {
-    transform: translateY(-5px); /* Slight lift effect on hover */
+    /* transform: translateY(-5px); Slight lift effect on hover */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), /* Enhanced shadow on hover for a "raised" effect */
                 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -88,7 +88,7 @@ body {
 }
 
 .box_3:hover, .box_4:hover, .box_5:hover {
-  transform: translateY(-5px); /* Slight lift effect on hover */
+  /* transform: translateY(-5px); Slight lift effect on hover */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), /* Enhanced shadow on hover for a "raised" effect */
               0 2px 4px rgba(0, 0, 0, 0.3);
 }
