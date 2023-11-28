@@ -43,50 +43,78 @@ body {
   .box_1 {
     width: 990px;
     height: 700px;
-    border: 2px solid black;
+    border: 2px solid #ddd; /* Lighter border color */
     margin: 10px;
     box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), /* Outer shadow */
+                0 1px 3px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
+    background-color: white; /* Optional: Change the background color */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions for interactive effects */
+}
 
-  }
+.box_1:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), /* Enhanced shadow on hover for a "raised" effect */
+                0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
   .box_2 {
     width: 990px;
     height: 700px;
-    border: 2px solid black;
+    border: 2px solid #ddd; /* Lighter border color */
     margin: 10px;
     box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), /* Outer shadow */
+                0 1px 3px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
+    background-color: white; /* Optional: Change the background color */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions for interactive effects */
+}
 
-  }
+.box_2:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), /* Enhanced shadow on hover for a "raised" effect */
+                0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-  .box_3 {
-    width: 990px;
-    height: 700px;
-    border: 2px solid black;
-    margin: 10px;
-    box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+.box_3, .box_4, .box_5 {
+  border: 2px solid #ddd; /* Lighter border color */
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), /* Outer shadow */
+              0 1px 3px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
+  background-color: white; /* Optional: Change the background color */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions for interactive effects */
+}
 
-  }
+.box_3:hover, .box_4:hover, .box_5:hover {
+  transform: translateY(-5px); /* Slight lift effect on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), /* Enhanced shadow on hover for a "raised" effect */
+              0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-  .box_5 {
-    width: 1980px;
-    height: 700px;
-    border: 2px solid black;
-    /* margin: 10px; */
-    box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  }
-  .box_4 {
-    width: 990px;
-    height: 700px;
-    border: 2px solid black;
-    margin: 10px;
-    box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+.box_3 {
+  width: 990px;
+  height: 700px;
+  margin: 10px;
+  box-sizing: border-box;
+}
 
-  }
+.box_4 {
+  width: 990px;
+  height: 700px;
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+.box_5 {
+  width: 1980px;
+  height: 700px;
+  /* Adjust the margin if needed, or remove it if you want the box to be full width */
+  margin: 10px auto; /* This will center the box if there's space on the sides */
+  box-sizing: border-box;
+}
+
 
   .container-1{
     text-align: center; 

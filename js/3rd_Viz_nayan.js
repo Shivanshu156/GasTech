@@ -5,7 +5,6 @@ const width = 800;
 const height = 675;
 const color = "white";
 
-
 let selectedNode = null;
 const my40Colors = [
   "#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c",
@@ -17,8 +16,49 @@ const my40Colors = [
   "#e7ba52", "#e7cb94", "#843c39", "#ad494a", "#d6616b",
   "#e7969c", "#7b4173", "#a55194", "#ce6dbd", "#de9ed6"
 ];
-const colorScale = d3.scaleOrdinal(my40Colors);
 
+
+let allOwners = [
+  "Willem Vasco-Pais",
+  "Ingrid Barranco",
+  "Vira Frente",
+  "Ada Campo-Corrente",
+  "Elsa Orilla",
+  "Axel Calzas",
+  "Orhan Strum",
+  "Edvard Vann",
+  "Sven Flecha",
+  "Hideki Cocinaro",
+  "Birgitta Frente",
+  "Stenig Fusil",
+  "Isia Vann",
+  "Linnea Bergen",
+  "Felix Balas",
+  "Marin Onda",
+  "Nils Calixto",
+  "Bertrand Ovan",
+  "Hennie Osvaldo",
+  "Lidelse Dedos",
+  "Brand Tempestad",
+  "Inga Ferro",
+  "Lars Azada",
+  "Kare Orilla",
+  "Lucas Alcazar",
+  "Unknown",
+  "Minke Mies",
+  "Varja Lagos",
+  "Kanon Herrero",
+  "Felix Resumir",
+  "Loreto Bodrogi",
+  "Isande Borrasca",
+  "Isak Baza",
+  "Adra Nubarron",
+  "Gustav Cazar",
+  "Sten Sanjorge Jr."
+];
+
+
+const colorScale = d3.scaleOrdinal(my40Colors).domain(allOwners);
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -31,6 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("height", height)
       .style("background-color", color);
 
+    
+
 
     // Create links between distinct names and credit cards
     const links = [];
@@ -38,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
       links.push({ source: entry.FirstName + " " + entry.LastName, target: entry.last4ccnum + " Loyalty Card: " + entry.LoyaltyCard });
     });
 
+    console.log(links)
     // Calculate link counts
     const linkCounts = {};
     links.forEach(link => {
@@ -137,6 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .filter(d => d.side === "source")
       .attr("r", 10)
       .attr("fill", d => colorScale(d.name))
+      .attr("id", d => "circle-" + d.name.replace(/\s+/g, '-'))
       .style("stroke", "#fff")
       .style("stroke-width", "1px")
       .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)")
@@ -284,8 +328,21 @@ function findMostImportantLink(node) {
   return mostImportantLink;
 }
 
+function clickCircleWithName_3rd_Viz(name) {
+  // Construct the ID based on the name
+  const circleId = "circle-" + name.replace(/\s+/g, '-');
 
+  // Select the circle by ID
+  const circle = d3.select("#" + circleId).node();
 
-
-
-
+  // Check if the circle element was found
+  if(circle) {
+      // Dispatch a click event on the found circle
+      circle.dispatchEvent(new MouseEvent('click', {
+        bubbles: true,    // Indicates that the event should bubble up through the DOM
+        cancelable: true  // Indicates that the event can be cancelled
+      }));
+  } else {
+      console.log("Circle with name '" + name + "' not found.");
+  }
+}

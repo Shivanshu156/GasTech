@@ -49,8 +49,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function drawBeeswarmChart_fifth_viz() {
     const locations_fifth_viz = [...new Set(combined_data_fifth_viz.map(d => d.location))]
+    drawBeeswarmLegend()
 
-    
+
 
     // Create Scales
     const xScale_fifth_viz = d3.scaleBand()
@@ -82,12 +83,12 @@ function drawBeeswarmChart_fifth_viz() {
     drawCustomYAxis_fifth_viz(g_beeswarm_fifth_viz, yScale_fifth_viz);
 
     g_beeswarm_fifth_viz.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin_fifth_viz.left+10)
-    .attr("x", 0 - (height_fifth_viz / 2))
-    .attr("dy", "1em")
-    .style("text-anchor", "middle")
-    .text("Price"); // Replace with your actual Y axis label
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin_fifth_viz.left + 10)
+        .attr("x", 0 - (height_fifth_viz / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Price"); // Replace with your actual Y axis label
 
     // Create the beeswarm using forceSimulation
     const simulation_fifth_viz = d3.forceSimulation(combined_data_fifth_viz)
@@ -101,8 +102,8 @@ function drawBeeswarmChart_fifth_viz() {
     // Draw circles
     // Create the tooltip
     const tooltip_fifth_viz = d3.select("#beeswarmViz")
-    .append("div")
-    .attr("class", "tooltip_fifth");
+        .append("div")
+        .attr("class", "tooltip_fifth");
 
     // Create mouseover and mouseout functions for the tooltip
     function mouseover_fifth_viz(event, d) {
@@ -119,8 +120,8 @@ function drawBeeswarmChart_fifth_viz() {
             "<br/>Owner: " + d.owner +
             "<br/>Timestamp: " + d.timestamp +
             "<br/>Location: " + d.location
-            
-            )
+
+        )
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 28) + "px");
     }
@@ -149,7 +150,10 @@ function drawBeeswarmChart_fifth_viz() {
         .attr("stroke", "black")
         .attr("stroke-width", 0.5)
         .on("mouseover", mouseover_fifth_viz)
-        .on("mouseout", mouseout_fifth_viz);
+        .on("mouseout", mouseout_fifth_viz)
+        .on("click", function (event, d) {
+            clickCircleWithName_3rd_Viz(d.owner);
+        });
 }
 
 function drawCustomYAxis_fifth_viz(g, yScale_fifth_viz) {
@@ -275,11 +279,49 @@ function highlightLocation(locationName) {
     // Apply a transition to increase the opacity of circles that match the specified location
     g_beeswarm_fifth_viz.selectAll(`#location-${normalizedLocation}`)
         .transition() // Start a transition
-        .duration(500) 
+        .duration(500)
         .style("opacity", 1)
-        .attr("r", 3.75); 
+        .attr("r", 3.75);
 }
 
 function normalizeString(str) {
-    return str.replace(/[^a-zA-Z0-9]/g, '-'); 
-    }
+    return str.replace(/[^a-zA-Z0-9]/g, '-');
+}
+
+
+function drawBeeswarmLegend() {
+    // Define legend data
+    const legendData = [
+        { label: 'Credit Card Data', color: '#FF5733' },
+        { label: 'Loyalty Card Data', color: 'black' }
+    ];
+
+    // Create legend group
+    const legend = svg_beeswarm_fifth_viz.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${width_fifth_viz - 50}, ${height_fifth_viz - 550})`); // Position the legend
+
+    // Create legend items
+    legend.selectAll(".legend-item")
+        .data(legendData)
+        .enter()
+        .append("g")
+        .attr("class", "legend-item")
+        .attr("transform", (d, i) => `translate(0, ${i * 25})`) // Position each legend item
+        .each(function (d) {
+            // Add the colored circle to the legend item
+            d3.select(this).append("circle")
+                .attr("r", 6) // Radius of the legend circles
+                .attr("cx", 0) // X position of the legend circles
+                .attr("cy", 0) // Y position of the legend circles
+                .attr("fill", d.color); // Color of the legend circles
+
+            // Add the label to the legend item
+            d3.select(this).append("text")
+                .attr("x", 15) // X position of the legend labels
+                .attr("y", 5) // Y position of the legend labels
+                .text(d.label) // Text of the legend labels
+                .attr("font-size", "12px")
+                .attr("fill", "#333"); // Color of the legend text
+        });
+}

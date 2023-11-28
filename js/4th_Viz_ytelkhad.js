@@ -220,8 +220,9 @@ function drawcaridpoints_fourth_viz() {
             "#8ca252", "#b5cf6b", "#cedb9c", "#8c6d31", "#bd9e39",
             "#e7ba52", "#e7cb94", "#843c39", "#ad494a", "#d6616b",
             "#e7969c", "#7b4173", "#a55194", "#ce6dbd", "#de9ed6"
-        ];
-
+          ];
+        
+        console.log(allGPSData_fourth_viz)
 
         const carIDs_fourth_viz = Array.from(new Set(allGPSData_fourth_viz.map(d => d.id)));
         colorScale_fourth_viz = d3.scaleOrdinal(my40Colors_fourth_viz).domain(carIDs_fourth_viz);
