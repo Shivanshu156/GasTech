@@ -1,6 +1,5 @@
 
 
-// Set your SVG dimensions and color
 const width = 800;
 const height = 675;
 const color = "white";
@@ -62,9 +61,9 @@ const colorScale = d3.scaleOrdinal(my40Colors).domain(allOwners);
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  // Promise.all([d3.csv("after_all_end.csv")]).then(([data]) => {
+
   Promise.all([d3.csv("data/pp.csv")]).then(([data]) => {
-    // Create SVG container
+  
 
     const svg = d3.select(".box_3").append("svg")
       .attr("width", width)
@@ -74,28 +73,26 @@ document.addEventListener("DOMContentLoaded", function () {
     
 
 
-    // Create links between distinct names and credit cards
     const links = [];
     data.forEach(entry => {
       links.push({ source: entry.FirstName + " " + entry.LastName, target: entry.last4ccnum + " Loyalty Card: " + entry.LoyaltyCard });
     });
 
     console.log(links)
-    // Calculate link counts
+
     const linkCounts = {};
     links.forEach(link => {
       const key = `${link.source}-${link.target}`;
       linkCounts[key] = (linkCounts[key] || 0) + 1;
     });
     console.log(linkCounts)
-    // Create nodes and links arrays
+    
     const nodesSet = new Set([...links.map(link => link.source), ...links.map(link => link.target)]);
     const nodes = Array.from(nodesSet).map(name => ({
       name,
       side: links.some(link => link.source === name) ? "source" : "target",
     }));
 
-    // Convert links set back to an array and ensure uniqueness
     const linksWithCountSet = new Set(links.map(link => JSON.stringify({
       source: link.source,
       target: link.target,
@@ -110,22 +107,22 @@ document.addEventListener("DOMContentLoaded", function () {
           JSON.stringify(obj) === JSON.stringify(value)
         ) === index
       );
-    // console.log(linksWithCount);
-    // Initialize force simulation
+   
+
     const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(linksWithCount).id(d => d.name).distance(30)) // Reduced distance
-      .force("charge", d3.forceManyBody().strength(-5)) // Further reduced strength
+      .force("link", d3.forceLink(linksWithCount).id(d => d.name).distance(30)) 
+      .force("charge", d3.forceManyBody().strength(-5)) 
       .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collide", d3.forceCollide().radius(30)); // Reduced radius
+      .force("collide", d3.forceCollide().radius(30)); 
 
-    // Set initial positions based on whether the node is a source or target
-    simulation.force("x", d3.forceX().strength(0.1).x(d => d.side === "source" ? 400 : 400)); // Lowered strength
+   
+    simulation.force("x", d3.forceX().strength(0.1).x(d => d.side === "source" ? 400 : 400)); 
 
 
-    // Define the drag function
+   
     function drag(simulation) {
       function dragstarted(event) {
-        if (!event.active) simulation.alphaTarget(0.1).restart(); // Further lowered alphaTarget
+        if (!event.active) simulation.alphaTarget(0.1).restart(); 
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
       }
@@ -136,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       function dragended(event) {
-        if (!event.active) simulation.alphaTarget(0); // Reset alphaTarget on drag end
+        if (!event.active) simulation.alphaTarget(0); 
         event.subject.fx = null;
         event.subject.fy = null;
       }
@@ -147,20 +144,20 @@ document.addEventListener("DOMContentLoaded", function () {
         .on("end", dragended);
     }
 
-    simulation.alphaDecay(0.2); // Increased decay rate
+    simulation.alphaDecay(0.2); 
     simulation.on("tick", () => {
-      // other tick actions
-      if (simulation.alpha() < 0.005) { // Lower threshold for stopping
+     
+      if (simulation.alpha() < 0.005) { 
         simulation.stop();
       }
     });
 
-    // Draw links
+  
     const link = svg.selectAll("line")
       .data(linksWithCount)
       .enter().append("line")
-      .attr("stroke", "#aaa") // More subtle default color
-      .attr("stroke-width", d => Math.max(1, d.count / 2)) // Ensure a minimum stroke width
+      .attr("stroke", "#aaa") 
+      .attr("stroke-width", d => Math.max(1, d.count / 2))
       .style("visibility", "hidden")
 
 
@@ -168,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .text(d => `Connection between ${d.source.name} and ${d.target.name}, Count: ${d.count}`);
 
 
-    // Draw nodes with circles for "source" and rectangles for "target"
+   
     const node = svg.selectAll("g")
       .data(nodes)
       .enter().append("g")
@@ -194,14 +191,14 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("fill", "url(#halfBrownHalfYellowGradient)")
       .attr("rx", 3)
       .attr("ry", 3)
-      .style("stroke", "#fff") // White border
+      .style("stroke", "#fff")
       .style("stroke-width", "1px")
-      .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)") // Shadow effect
+      .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)") 
       .on("mouseover", function () { d3.select(this).transition().attr("width", 45).attr("height", 25); })
       .on("mouseout", function () { d3.select(this).transition().attr("width", 20).attr("height", 10); });
 
-    const labelArea = svg.append("g") // Create a group for labels
-      .attr("transform", "translate(20, 30)"); // Position this group
+    const labelArea = svg.append("g") 
+      .attr("transform", "translate(20, 30)");
 
     labelArea.append("circle")
       .attr("cx", 10)
@@ -217,7 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("font-size", "12px")
       .attr("fill", "black");
 
-    // Draw label for Credit and Loyalty Card (Rectangle)
     labelArea.append("rect")
       .attr("x", 0)
       .attr("y", 20)
@@ -226,9 +222,9 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("fill", "url(#halfBrownHalfYellowGradient)")
       .attr("rx", 3)
       .attr("ry", 3)
-      .style("stroke", "#fff") // White border
+      .style("stroke", "#fff") 
       .style("stroke-width", "1px")
-      .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)") // Shadow effect
+      .style("box-shadow", "2px 2px 5px rgba(0,0,0,0.3)")
       
     labelArea.append("text")
       .attr("x", 25)
@@ -237,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("font-family", "sans-serif")
       .attr("font-size", "12px")
       .attr("fill", "black");
-    // Define a linear gradient
+   
 
     const gradient = svg.append("defs")
       .append("linearGradient")
@@ -247,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("x2", "100%")
       .attr("y2", "0%");
 
-    // Add the two gradient stops (brown and yellow)
+   
     gradient.append("stop")
       .attr("offset", "50%")
       .style("stop-color", "#CE4420");
@@ -256,46 +252,45 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("offset", "50%")
       .style("stop-color", "#00203FFF");
 
-    // Add labels to nodes
+    
     node.append("title")
       .text(d => d.side === "source" ? `Name: ${d.name}` : `Credit Card: ${d.name}`);
 
-    // Function to handle node click event
+
     function handleNodeClick(event, d) {
       if (selectedNode === d) {
-        // If the clicked node is the same as the currently selected node, clear selection
+        
         selectedNode = null;
         link.style("visibility", "hidden");
       } else {
-        // If a new node is clicked, update the selection and show connections
+     
         selectedNode = d;
         updateConnections();
       }
     }
 
-    // Function to update link visibility based on selected node
+    
     function updateConnections() {
-      link.transition().duration(500) // Add a transition
+      link.transition().duration(500)
         .style("visibility", l => l.source === selectedNode || l.target === selectedNode ? "visible" : "hidden");
     }
 
-    // Function to handle mouseover event
     function handleMouseOver(event, d) {
-      link.transition().duration(300) // Smoother transition for showing links
+      link.transition().duration(300) 
       //   .style("visibility", l => l.source === d || l.target === d ? "visible" : "hidden");
     }
 
     function handleMouseOut() {
-      link.transition().duration(300) // Smoother transition for hiding links
+      link.transition().duration(300) 
       //   .style("visibility", "hidden");
     }
 
-    // Apply mouseout event to nodes
+    
     node.on("mouseout", handleMouseOut);
 
     simulation.on("tick", () => {
-      // Compress the graph from top and bottom
-      const compressFactor = 4; // Adjust this value as needed
+     
+      const compressFactor = 4; 
       const compressedHeight = height * compressFactor;
 
       link
@@ -304,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .attr("x2", d => d.target.x)
         .attr("y2", d => d.target.y);
 
-      // Update y-coordinate of nodes
+  
       node
         .attr("cx", d => d.x)
         .attr("cy", d => Math.max(Math.min(d.y, compressedHeight), 0))
@@ -313,9 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// Assuming you have your nodes and linksWithCount data ready
 
-// Function to find the most important link for each node
 function findMostImportantLink(node) {
   let maxCount = 0;
   let mostImportantLink = null;
@@ -329,18 +322,16 @@ function findMostImportantLink(node) {
 }
 
 function clickCircleWithName_3rd_Viz(name) {
-  // Construct the ID based on the name
+
   const circleId = "circle-" + name.replace(/\s+/g, '-');
 
-  // Select the circle by ID
+
   const circle = d3.select("#" + circleId).node();
 
-  // Check if the circle element was found
   if(circle) {
-      // Dispatch a click event on the found circle
       circle.dispatchEvent(new MouseEvent('click', {
-        bubbles: true,    // Indicates that the event should bubble up through the DOM
-        cancelable: true  // Indicates that the event can be cancelled
+        bubbles: true,    
+        cancelable: true 
       }));
   } else {
       console.log("Circle with name '" + name + "' not found.");

@@ -5,12 +5,12 @@ const margin_fourth_viz = { top: 0, right: 0, bottom: 0, left: -200 };
 const mapWidth_fourth_viz = 1100 - margin_fourth_viz.left - margin_fourth_viz.right;
 const mapHeight_fourth_viz = 550 - margin_fourth_viz.top - margin_fourth_viz.bottom;
 let projection_fourth_viz;
-let currentDayData_fourth_viz = []; // Data for the selected date
+let currentDayData_fourth_viz = []; 
 let colorScale_fourth_viz;
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Create SVG for the map
+    
     svg_map_fourth_viz = d3.select("#map-container")
         .append("svg")
         .attr("width", mapWidth_fourth_viz + margin_fourth_viz.left + margin_fourth_viz.right)
@@ -18,23 +18,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     g_map_fourth_viz = svg_map_fourth_viz.append("g").attr("transform", `translate(${margin_fourth_viz.left}, ${margin_fourth_viz.top})`);
 
-    // Define the projection
-    projection_fourth_viz = d3.geoMercator() // Adjust as needed
-        .scale(1) // Adjust scale
-        .translate([0, 0]); // Adjust translation
+   
+    projection_fourth_viz = d3.geoMercator()
+        .scale(1) 
+        .translate([0, 0]); 
 
-    // Define the path generator
+
     var path_fourth_viz = d3.geoPath()
         .projection(projection_fourth_viz);
 
-    // Load and process TopoJSON
+  
     d3.json("data/Abila.json").then(function (data) {
         var geojson_fourth_viz = topojson.feature(data, data.objects.Abila1);
 
-        // Fit the projection
+       
         projection_fourth_viz.fitSize([mapWidth_fourth_viz, mapHeight_fourth_viz], geojson_fourth_viz);
 
-        // Draw the paths
+       
         g_map_fourth_viz.selectAll(".pathAbila")
             .data(geojson_fourth_viz.features)
             .enter().append("path")
@@ -48,19 +48,19 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("class", "tooltip_fourth")
             .style("opacity", 0);
 
-        // Add event listeners to the SVG or paths
+        
         g_map_fourth_viz.selectAll(".pathAbila")
             .on("mousemove", function (event, d) {
-                // Get mouse position
+                
                 var [x, y] = d3.pointer(event, this);
 
-                // Convert mouse position to geographic coordinates
+               
                 var coords = projection_fourth_viz.invert([x, y]);
 
-                // Update and show tooltip
+                
                 tooltip_fourth_viz.style("opacity", .9)
                     .html("Lat: " + coords[1].toFixed(8) + "<br/>Lon: " + coords[0].toFixed(8))
-                    .style("left", (event.pageX + 10) + "px") // Offset the tooltip a bit from the cursor
+                    .style("left", (event.pageX + 10) + "px") 
                     .style("top", (event.pageY + 10) + "px");
             })
             .on("mouseout", function (d) {
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .on("click", function (event, d) {
                 var [x, y] = d3.pointer(event, this);
 
-                // Convert mouse position to geographic coordinates
+           
                 var coords = projection_fourth_viz.invert([x, y]);
 
                 var tooltipText_fourth_viz = coords[1].toFixed(8) + "," + coords[0].toFixed(8);
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         drawcaridpoints_fourth_viz();
 
-        // Event listeners for date picker and time slider
+      
         const datePicker_fourth_viz = document.getElementById('datePicker');
         const timeSlider_fourth_viz = document.getElementById('timeSlider');
 
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         updateCurrentTimeDisplay_fourth_viz(currentTime_fourth_viz);
                         updateCarPositions_fourth_viz(currentTime_fourth_viz);
                     }
-                }, 300); // Adjust time interval as needed
+                }, 300); 
             } else {
                 clearInterval(playInterval_fourth_viz);
                 playButton_fourth_viz.textContent = 'Play';
@@ -144,19 +144,19 @@ function updateCarPositions_fourth_viz(selectedTime_fourth_viz) {
     currentDayData_fourth_viz.forEach(d => {
         const timeDecimal_fourth_viz = d.timestamp.getHours() + d.timestamp.getMinutes() / 60;
         if (timeDecimal_fourth_viz <= selectedTime_fourth_viz && timeDecimal_fourth_viz >= timeWindowStart_fourth_viz) {
-            latestPositions_fourth_viz.set(d.id, d); // Update the latest position for each carId
+            latestPositions_fourth_viz.set(d.id, d);
         }
     });
 
-    const filteredData_fourth_viz = Array.from(latestPositions_fourth_viz.values()); // Convert to an array
+    const filteredData_fourth_viz = Array.from(latestPositions_fourth_viz.values()); 
 
     const simulation_fourth_viz = d3.forceSimulation(filteredData_fourth_viz)
         .force('x', d3.forceX(d => projection_fourth_viz([d.long, d.lat])[0]).strength(6))
         .force('y', d3.forceY(d => projection_fourth_viz([d.long, d.lat])[1]).strength(6))
-        .force('collide', d3.forceCollide(10)) // Adjust the radius to match circle radius + desired padding
+        .force('collide', d3.forceCollide(10)) 
         .stop();
 
-    // Run the simulation
+ 
     for (let i = 0; i < 120; i++) simulation_fourth_viz.tick();
 
     const carPoints_fourth_viz = g_map_fourth_viz.selectAll(".car-point")
@@ -167,10 +167,10 @@ function updateCarPositions_fourth_viz(selectedTime_fourth_viz) {
         .attr("cy", d => d.y)
         .attr("r", 6)
         .attr("fill", d => colorScale_fourth_viz(d.id))
-        .attr("stroke", "black")  // Set the color of the boundary
-        .attr("stroke-width", 1.5);  // Set the width of the boundary
+        .attr("stroke", "black")  
+        .attr("stroke-width", 1.5);  
 
-    // Add tooltip functionality
+    
     const tooltip_fourth_viz = d3.select('.tooltip_fourth');
 
     carPoints_fourth_viz.on('mouseover', function (event, d) {
@@ -188,7 +188,7 @@ function updateCarPositions_fourth_viz(selectedTime_fourth_viz) {
 }
 
 function drawcaridpoints_fourth_viz() {
-    // Load the GPS data and car assignment data
+    
     Promise.all([
         d3.csv("data/gps.csv"),
         d3.csv("data/car-assignments.csv")
@@ -196,13 +196,13 @@ function drawcaridpoints_fourth_viz() {
         let gpsData_fourth_viz = data[0];
         let carAssignmentData_fourth_viz = data[1];
 
-        // Create a map of car assignments
+       
         let carAssignments_fourth_viz = new Map();
         carAssignmentData_fourth_viz.forEach(d => {
             carAssignments_fourth_viz.set(d.CarID, d.LastName + ", " + d.FirstName);
         });
 
-        // Merge GPS data with car assignments
+        
         allGPSData_fourth_viz = gpsData_fourth_viz.map(d => {
             d.lat = +d.lat;
             d.long = +d.long;
@@ -227,13 +227,11 @@ function drawcaridpoints_fourth_viz() {
         const carIDs_fourth_viz = Array.from(new Set(allGPSData_fourth_viz.map(d => d.id)));
         colorScale_fourth_viz = d3.scaleOrdinal(my40Colors_fourth_viz).domain(carIDs_fourth_viz);
 
-        // Check the domain right before creating the legend
         console.log("Color scale domain before legend creation:", colorScale_fourth_viz.domain());
 
-        // Initial update of the map with default date and time
-        const defaultDate_fourth_viz = "2014-01-06"; // Adjust as needed
+        const defaultDate_fourth_viz = "2014-01-06"; 
         filterDataForSelectedDate_fourth_viz(defaultDate_fourth_viz);
-        updateCarPositions_fourth_viz(12.21); // Adjust as needed
+        updateCarPositions_fourth_viz(12.21); 
     });
 }
 
@@ -245,7 +243,7 @@ function updateCurrentTimeDisplay_fourth_viz(currentTime_fourth_viz) {
 }
 
 function drawRelationshipCircles_fourth_viz(data_fourth_viz) {
-    const relationshipThreshold_fourth_viz = 20; // Threshold in pixels for considering a relationship
+    const relationshipThreshold_fourth_viz = 20; 
     const relationships_fourth_viz = [];
 
     data_fourth_viz.forEach((d, i) => {
@@ -263,7 +261,6 @@ function drawRelationshipCircles_fourth_viz(data_fourth_viz) {
         }
     });
 
-    // Draw relationship circles
     g_map_fourth_viz.selectAll(".relationship-circle")
         .data(relationships_fourth_viz)
         .join("circle")
@@ -277,6 +274,6 @@ function drawRelationshipCircles_fourth_viz(data_fourth_viz) {
 }
 
 function distanceBetweenPoints_fourth_viz(point1_fourth_viz, point2_fourth_viz) {
-    // Calculate the Euclidean distance between two points
+
     return Math.sqrt(Math.pow(point1_fourth_viz[0] - point2_fourth_viz[0], 2) + Math.pow(point1_fourth_viz[1] - point2_fourth_viz[1], 2));
 }

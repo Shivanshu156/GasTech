@@ -23,14 +23,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             cc_data_fifth_viz.forEach(d => {
                 d.price = +d.price;
-                d.timestamp = d.timestamp.split(" ")[0]; // Keep only the date part
+                d.timestamp = d.timestamp.split(" ")[0]; 
             });
             loyalty_data_fifth_viz.forEach(d => {
                 d.price = +d.price;
-                // d.timestamp already in desired format
+         
             });
 
-            // Combine data
+        
             combined_data_fifth_viz = cc_data_fifth_viz.map(d => ({ ...d, type: 'cc' }))
                 .concat(loyalty_data_fifth_viz.map(d => ({ ...d, type: 'loyalty' })));
 
@@ -53,15 +53,15 @@ function drawBeeswarmChart_fifth_viz() {
 
 
 
-    // Create Scales
+
     const xScale_fifth_viz = d3.scaleBand()
-        .domain(locations_fifth_viz) // Use the sorted locations here
+        .domain(locations_fifth_viz)
         .range([0, width_fifth_viz])
         .padding(1);
 
     const yScale_fifth_viz = customYScale_fifth_viz();
 
-    // Add X Axis
+    
     g_beeswarm_fifth_viz.append("g")
         .attr("transform", `translate(0, ${height_fifth_viz})`)
         .call(d3.axisBottom(xScale_fifth_viz))
@@ -76,10 +76,10 @@ function drawBeeswarmChart_fifth_viz() {
     g_beeswarm_fifth_viz.append("text")
         .attr("transform", `translate(${width_fifth_viz / 2}, ${height_fifth_viz + margin_fifth_viz.bottom - 70})`)
         .style("text-anchor", "middle")
-        .text("Locations"); // Replace with your actual X axis label
+        .text("Locations");
 
 
-    // Add Custom Y Axis
+  
     drawCustomYAxis_fifth_viz(g_beeswarm_fifth_viz, yScale_fifth_viz);
 
     g_beeswarm_fifth_viz.append("text")
@@ -88,9 +88,8 @@ function drawBeeswarmChart_fifth_viz() {
         .attr("x", 0 - (height_fifth_viz / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Price"); // Replace with your actual Y axis label
+        .text("Price"); 
 
-    // Create the beeswarm using forceSimulation
     const simulation_fifth_viz = d3.forceSimulation(combined_data_fifth_viz)
         .force("x", d3.forceX(d => xScale_fifth_viz(d.location)).strength(1))
         .force("y", forceYCustom_fifth_viz(d => yScale_fifth_viz(d.price)).strength(0.8))
@@ -99,15 +98,13 @@ function drawBeeswarmChart_fifth_viz() {
 
     for (let i = 0; i < 120; ++i) simulation_fifth_viz.tick();
 
-    // Draw circles
-    // Create the tooltip
     const tooltip_fifth_viz = d3.select("#beeswarmViz")
         .append("div")
         .attr("class", "tooltip_fifth");
 
-    // Create mouseover and mouseout functions for the tooltip
+  
     function mouseover_fifth_viz(event, d) {
-        // Enlarge the circle on hover
+       
         d3.select(this).transition()
             .duration(200)
             .attr('r', 8);
@@ -127,7 +124,7 @@ function drawBeeswarmChart_fifth_viz() {
     }
 
     function mouseout_fifth_viz() {
-        // Shrink the circle back to normal size
+       
         d3.select(this).transition()
             .duration(500)
             .attr('r', 4);
@@ -137,7 +134,7 @@ function drawBeeswarmChart_fifth_viz() {
             .style("opacity", 0);
     }
 
-    // Draw circles with tooltip interactions
+    
     g_beeswarm_fifth_viz.selectAll(".dot")
         .data(combined_data_fifth_viz)
         .enter().append("circle")
@@ -146,7 +143,7 @@ function drawBeeswarmChart_fifth_viz() {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .attr("r", 3)
-        .attr("fill", d => d.type === 'cc' ? "#FF5733" : "black") // Updated colors: Teal and Purple
+        .attr("fill", d => d.type === 'cc' ? "#FF5733" : "black") 
         .attr("stroke", "black")
         .attr("stroke-width", 0.5)
         .on("mouseover", mouseover_fifth_viz)
@@ -157,7 +154,7 @@ function drawBeeswarmChart_fifth_viz() {
 }
 
 function drawCustomYAxis_fifth_viz(g, yScale_fifth_viz) {
-    // Remove existing axis if it exists
+    
     g.selectAll(".axis--y").remove();
 
     const axis_fifth_viz = g.append("g")
@@ -181,7 +178,7 @@ function drawAxisSegment_fifth_viz(axis_fifth_viz, domainStart_fifth_viz, domain
         .attr("y2", scale_fifth_viz(domainEnd_fifth_viz))
         .attr("stroke", "black");
 
-    // Calculate tick values and positions
+
     const ticks_fifth_viz = scale_fifth_viz.ticks(5);
     ticks_fifth_viz.forEach(tick => {
         if (tick >= domainStart_fifth_viz && tick <= domainEnd_fifth_viz) {
@@ -270,15 +267,14 @@ function forceYCustom_fifth_viz(yValue_fifth_viz) {
 function highlightLocation(locationName) {
     const normalizedLocation = normalizeString(locationName);
 
-    // Apply a transition to reduce the opacity of all circles
+  
     g_beeswarm_fifth_viz.selectAll(".dot")
-        .transition() // Start a transition
-        .duration(500) // Duration in milliseconds
-        .style("opacity", 0.2); // Target opacity
+        .transition() 
+        .duration(500) 
+        .style("opacity", 0.2);
 
-    // Apply a transition to increase the opacity of circles that match the specified location
     g_beeswarm_fifth_viz.selectAll(`#location-${normalizedLocation}`)
-        .transition() // Start a transition
+        .transition() 
         .duration(500)
         .style("opacity", 1)
         .attr("r", 3.75);
@@ -290,38 +286,38 @@ function normalizeString(str) {
 
 
 function drawBeeswarmLegend() {
-    // Define legend data
+
     const legendData = [
         { label: 'Credit Card Data', color: '#FF5733' },
         { label: 'Loyalty Card Data', color: 'black' }
     ];
 
-    // Create legend group
+
     const legend = svg_beeswarm_fifth_viz.append("g")
         .attr("class", "legend")
-        .attr("transform", `translate(${width_fifth_viz - 50}, ${height_fifth_viz - 550})`); // Position the legend
+        .attr("transform", `translate(${width_fifth_viz - 50}, ${height_fifth_viz - 550})`); 
 
-    // Create legend items
+
     legend.selectAll(".legend-item")
         .data(legendData)
         .enter()
         .append("g")
         .attr("class", "legend-item")
-        .attr("transform", (d, i) => `translate(0, ${i * 25})`) // Position each legend item
+        .attr("transform", (d, i) => `translate(0, ${i * 25})`)
         .each(function (d) {
-            // Add the colored circle to the legend item
+            
             d3.select(this).append("circle")
-                .attr("r", 6) // Radius of the legend circles
-                .attr("cx", 0) // X position of the legend circles
-                .attr("cy", 0) // Y position of the legend circles
-                .attr("fill", d.color); // Color of the legend circles
+                .attr("r", 6) 
+                .attr("cx", 0) 
+                .attr("cy", 0) 
+                .attr("fill", d.color);
 
-            // Add the label to the legend item
+
             d3.select(this).append("text")
-                .attr("x", 15) // X position of the legend labels
-                .attr("y", 5) // Y position of the legend labels
-                .text(d.label) // Text of the legend labels
+                .attr("x", 15) 
+                .attr("y", 5) 
+                .text(d.label) 
                 .attr("font-size", "12px")
-                .attr("fill", "#333"); // Color of the legend text
+                .attr("fill", "#333");
         });
 }

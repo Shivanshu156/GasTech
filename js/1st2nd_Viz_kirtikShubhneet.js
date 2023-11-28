@@ -1,4 +1,4 @@
-// Load data from the CSV file
+
 function createGanttChart(date) {
     d3.csv('data/cc_data.csv').then(function (data) {
         data.forEach(function (d) {
@@ -11,7 +11,7 @@ function createGanttChart(date) {
             chosenDate.getTime() + chosenDate.getTimezoneOffset() * 60000
         );
 
-        // console.log(chosenDate.toDateString());
+       
         const selectedData = data.filter(function (d) {
             console.log(d.timestamp.toDateString());
 
@@ -55,7 +55,6 @@ function createGanttChart(date) {
             })
             .domain([0, 15]);
 
-        // Create an SVG element for the legend
         const legendWidth = 200;
         const legendHeight = 50;
         const legendSvg = d3
@@ -64,9 +63,9 @@ function createGanttChart(date) {
             .attr('width', legendWidth)
             .attr('height', legendHeight)
             .append('g')
-            .attr('transform', 'translate(10, 20)'); // Adjust the position as needed
+            .attr('transform', 'translate(10, 20)'); 
 
-        // Create a linear gradient for the legend
+       
         const gradient = legendSvg
             .append('linearGradient')
             .attr('id', 'colorGradient')
@@ -75,7 +74,7 @@ function createGanttChart(date) {
             .attr('x2', '100%')
             .attr('y2', '0%');
 
-        // Add color stops to the gradient
+  
         gradient
             .append('stop')
             .attr('offset', '0%')
@@ -89,14 +88,14 @@ function createGanttChart(date) {
             .attr('offset', '100%')
             .attr('style', `stop-color:${colorScale(20)};stop-opacity:1`);
 
-        // Create a rectangle to display the gradient
+       
         legendSvg
             .append('rect')
-            .attr('width', legendWidth - 20) // Adjust the width as needed
+            .attr('width', legendWidth - 20) 
             .attr('height', legendHeight)
             .style('fill', 'url(#colorGradient)');
 
-        // Add text labels for the legend
+        
         legendSvg.append('text').attr('x', 0).attr('y', -5).text('0');
 
         legendSvg
@@ -114,7 +113,7 @@ function createGanttChart(date) {
         const width = 800 - margin.left - margin.right;
         const height = 600 - margin.top - margin.bottom;
 
-        // Create the SVG element
+        
         const svg = d3
             .select('.box_1')
             .append('svg')
@@ -126,7 +125,7 @@ function createGanttChart(date) {
                 'translate(' + margin.left + ',' + margin.top + ')'
             );
 
-        // Set up scales
+        
         const xScale = d3.scaleLinear().domain([0, 24]).range([0, width]);
 
         const yScale = d3
@@ -178,7 +177,7 @@ function createGanttChart(date) {
                 tooltip.transition().duration(500).style('opacity', 0);
             })
             .on('click', function (event, d) {
-                // Log the corresponding location value to the console
+                
                 console.log('Clicked on location:', d.location);
                 highlightLocation(d.location)
                 d3.select('.box_2').select('svg').remove();
@@ -211,7 +210,7 @@ function createGanttChart(date) {
             .style('text-anchor', 'middle')
             .text('Location');
 
-        // Add x-axis label
+   
         svg.append('text')
             .attr(
                 'transform',
@@ -239,10 +238,10 @@ function createLineChart(date, location) {
     if (desiredLocation === 'Katerina�s Caf�')
         desiredLocation = 'Katerinas Café';
 
-    // Load cc_data and loyalty_data CSV files
+
     Promise.all([
         d3.csv('data/cc_loyalty_combined.csv'),
-        d3.csv('data/merged_data.csv'), // Load merged_data.csv
+        d3.csv('data/merged_data.csv'), 
     ]).then(([loyaltyCCData, vehicleData]) => {
         const tooltip = d3
             .select('.box_2')
@@ -250,53 +249,48 @@ function createLineChart(date, location) {
             .attr('class', 'tooltip')
             .style('opacity', 0);
 
-        // Parse timestamps and extract dates for main loyaltyCCData
+      
         const parseDate = d3.timeParse('%Y-%m-%d %H:%M:%S');
         loyaltyCCData.forEach(
             (d) => (d.timestamp_x = parseDate(d.timestamp_x))
         );
-        loyaltyCCData.forEach((d) => (d.date = d3.timeDay(d.timestamp_x))); // Extract date
+        loyaltyCCData.forEach((d) => (d.date = d3.timeDay(d.timestamp_x))); 
 
         let loyaltyCCFilteredData = loyaltyCCData.filter(
-            // (d) => d.date.toISOString().split('T')[0] === desiredDate
+            
             (d) => d.location === desiredLocation
         );
 
-        // let loyaltyCCFilteredData = loyaltyCCFilteredData.filter(
-        //     (d) => d.location === desiredLocation
-        // );
+  
 
         console.log('Kirtik', loyaltyCCFilteredData);
 
-        const dateGroupedData = d3.group(loyaltyCCFilteredData, (d) => d.date); // Group by date
+        const dateGroupedData = d3.group(loyaltyCCFilteredData, (d) => d.date); 
 
-        // Aggregate counts for the same date
+
         const lineChartData = Array.from(dateGroupedData, ([date, entries]) => {
             const count = entries.length;
             return { date, count };
         });
         lineChartData.sort((a, b) => a.date - b.date);
 
-        // Aggregate sums of transaction amounts for the same date
         const sumData = Array.from(dateGroupedData, ([date, entries]) => {
             const sum = d3.sum(entries, (d) => d.price);
             return { date, sum };
         });
         sumData.sort((a, b) => a.date - b.date);
 
-        // Parse timestamps and extract dates for vehicle loyaltyCCData
+        
         vehicleData.forEach((d) => (d.Timestamp = parseDate(d.Timestamp)));
-        vehicleData.forEach((d) => (d.date = d3.timeDay(d.Timestamp))); // Extract date
+        vehicleData.forEach((d) => (d.date = d3.timeDay(d.Timestamp))); 
 
-        // vehicleData = vehicleData.filter(
-        //     (d) => d.Timestamp.toISOString().split('T')[0] === desiredDate
-        // );
+     
 
         vehicleData = vehicleData.filter((d) => d.location === desiredLocation);
 
-        const dateGroupedVehicle = d3.group(vehicleData, (d) => d.date); // Group by date
+        const dateGroupedVehicle = d3.group(vehicleData, (d) => d.date);
 
-        // Aggregate counts for the number of vehicles passing each date
+     
         const vehicleCountData = Array.from(
             dateGroupedVehicle,
             ([date, entries]) => {
@@ -306,12 +300,12 @@ function createLineChart(date, location) {
         );
         vehicleCountData.sort((a, b) => a.date - b.date);
 
-        // Set up the SVG dimensions
+      
         const margin = { top: 20, right: 80, bottom: 40, left: 50 };
         const width = 900 - margin.left - margin.right;
         const height = 650 - margin.top - margin.bottom;
 
-        // Create SVG container
+      
         const svg = d3
             .select('.box_2')
             .append('svg')
@@ -320,19 +314,19 @@ function createLineChart(date, location) {
             .append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
-        // Set up scales
+     
         const xScale = d3
             .scaleTime()
             .domain(d3.extent(lineChartData, (d) => d.date))
             .range([0, width]);
 
-        // Calculate the maximum value among transaction count and vehicle count
+       
         const maxYValue = Math.max(
             d3.max(lineChartData, (d) => d.count),
             d3.max(vehicleCountData, (d) => d.vehicleCount)
         );
 
-        // Set up the Y-axis scale taking into consideration both datasets
+       
         const yScaleCount = d3
             .scaleLinear()
             .domain([0, maxYValue])
@@ -343,13 +337,13 @@ function createLineChart(date, location) {
             .domain([0, d3.max(sumData, (d) => d.sum)])
             .range([height, 0]);
 
-        // Set up the second Y-axis for vehicle count
+    
         const yScaleVehicle = d3
             .scaleLinear()
             .domain([0, d3.max(vehicleCountData, (d) => d.vehicleCount)])
             .range([height, 0]);
 
-        // Create line functions
+    
         const lineCount = d3
             .line()
             .x((d) => xScale(d.date))
@@ -365,12 +359,11 @@ function createLineChart(date, location) {
             .x((d) => xScale(d.date))
             .y((d) => yScaleVehicle(d.vehicleCount));
 
-        // Draw X-axis
+       
         svg.append('g')
             .attr('transform', `translate(0,${height})`)
             .call(d3.axisBottom(xScale));
 
-        // Add x-axis label
         svg.append('text')
             .attr(
                 'transform',
@@ -379,10 +372,10 @@ function createLineChart(date, location) {
             .style('text-anchor', 'middle')
             .text('Date');
 
-        // Draw Y-axis for count
+  
         svg.append('g').call(d3.axisLeft(yScaleCount));
 
-        // Draw line for count
+   
         svg.append('path')
             .data([lineChartData])
             .attr('fill', 'none')
@@ -391,7 +384,7 @@ function createLineChart(date, location) {
             .attr('stroke', 'blue')
             .attr('stroke-width', 1.5);
 
-        // Add circles for each data point
+    
         svg.selectAll('.circle-count')
             .data(lineChartData)
             .enter()
@@ -399,10 +392,10 @@ function createLineChart(date, location) {
             .attr('class', 'circle-count')
             .attr('cx', (d) => xScale(d.date))
             .attr('cy', (d) => yScaleCount(d.count))
-            .attr('r', 4) // Adjust the radius as needed
+            .attr('r', 4) 
             .attr('fill', 'blue')
             .on('mouseover', function (event, d) {
-                // Show tooltip on mouseover
+                
                 tooltip.transition().duration(200).style('opacity', 0.9);
                 tooltip
                     .html(
@@ -414,11 +407,11 @@ function createLineChart(date, location) {
                     .style('top', event.pageY - 28 + 'px');
             })
             .on('mouseout', function () {
-                // Hide tooltip on mouseout
+              
                 tooltip.transition().duration(500).style('opacity', 0);
             });
 
-        // Add a label for the count y-axis
+    
         svg.append('text')
             .attr('transform', 'rotate(-90)')
             .attr('y', 0 - margin.left)
@@ -427,12 +420,11 @@ function createLineChart(date, location) {
             .style('text-anchor', 'middle')
             .text('Number of Instances');
 
-        // Draw Y-axis for sum
         svg.append('g')
             .attr('transform', `translate(${width}, 0)`)
             .call(d3.axisRight(yScaleSum));
 
-        // Draw line for sum
+  
         svg.append('path')
             .data([sumData])
             .attr('fill', 'none')
@@ -440,8 +432,7 @@ function createLineChart(date, location) {
             .attr('d', lineSum)
             .attr('stroke', 'red')
             .attr('stroke-width', 1.5);
-        // Add circles for each data point in the sum line
-        // Similarly, add tooltips for the sum and vehicle count circles
+       
         svg.selectAll('.circle-sum')
             .data(sumData)
             .enter()
@@ -449,7 +440,7 @@ function createLineChart(date, location) {
             .attr('class', 'circle-sum')
             .attr('cx', (d) => xScale(d.date))
             .attr('cy', (d) => yScaleSum(d.sum))
-            .attr('r', 4) // Adjust the radius as needed
+            .attr('r', 4) 
             .attr('fill', 'red')
             .on('mouseover', function (event, d) {
                 tooltip.transition().duration(200).style('opacity', 0.9);
@@ -466,22 +457,20 @@ function createLineChart(date, location) {
                 tooltip.transition().duration(500).style('opacity', 0);
             });
 
-        // Add a label for the sum y-axis
         svg.append('text')
             .attr('transform', 'rotate(-90)')
             .attr('y', width + margin.right / 2)
             .attr('x', 0 - height / 2)
             .attr('dy', '1em')
             .style('text-anchor', 'middle')
-            .style('fill', 'red')  // Set text color to red
+            .style('fill', 'red') 
             .text('Total Amount Spent');
 
-        // Draw Y-axis for vehicle count
+    
         svg.append('g')
             .attr('transform', `translate(${width + margin.right}, 0)`)
             .call(d3.axisRight(yScaleVehicle));
 
-        // Draw line for vehicle count
         svg.append('path')
             .data([vehicleCountData])
             .attr('fill', 'none')
@@ -489,7 +478,7 @@ function createLineChart(date, location) {
             .attr('d', lineVehicleCount)
             .attr('stroke', 'black')
             .attr('stroke-width', 1.5);
-        // Add circles for each data point in the vehicle count line
+      
         svg.selectAll('.circle-vehicle')
             .data(vehicleCountData)
             .enter()
@@ -497,7 +486,7 @@ function createLineChart(date, location) {
             .attr('class', 'circle-vehicle')
             .attr('cx', (d) => xScale(d.date))
             .attr('cy', (d) => yScaleVehicle(d.vehicleCount))
-            .attr('r', 4) // Adjust the radius as needed
+            .attr('r', 4) 
             .attr('fill', 'black')
             .on('mouseover', function (event, d) {
                 tooltip.transition().duration(200).style('opacity', 0.9);
@@ -514,7 +503,7 @@ function createLineChart(date, location) {
                 tooltip.transition().duration(500).style('opacity', 0);
             });
 
-        // Add a label for the vehicle count y-axis
+
         svg.append('text')
             .attr('transform', 'rotate(-90)')
             .attr('y', width + margin.right + margin.right / 2)
@@ -524,7 +513,7 @@ function createLineChart(date, location) {
             .attr('stroke', 'black')
             .text('Number of Vehicles');
 
-        // Legend
+  
         const legend = svg
             .append('g')
             .attr('transform', `translate(${width - 720},${margin.top - 0})`)
@@ -577,8 +566,8 @@ function createLineChart(date, location) {
             .append('text')
             .attr('x', 20)
             .attr('y', 8)
-            .style('font-weight', 'bold') // Make the text bold
-            .style('font-size', '20px') // Set the font size
+            .style('font-weight', 'bold') 
+            .style('font-size', '20px') 
             .text(desiredLocation);
     });
 }
